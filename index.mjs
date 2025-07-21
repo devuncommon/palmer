@@ -399,7 +399,7 @@ class Home {
 
     this.colorButton.innerText = "color";
     this.typeButton.innerText = "type";
-    this.sizeButton.innerText = "⌀ size";
+    this.sizeButton.innerText = "âŒ€ size";
 
     this.allFilters = [
       this.filterCategoryColor,
@@ -909,11 +909,11 @@ class Home {
 
   setMinValueOutput = () => {
     this.minRange = parseInt(this.rangeInput[0].value);
-    this.minval.innerHTML = `⌀ ${this.sizes[this.rangeInput[0].value]} cm`;
+    this.minval.innerHTML = `âŒ€ ${this.sizes[this.rangeInput[0].value]} cm`;
   };
   setMaxValueOutput = () => {
     this.maxRange = parseInt(this.rangeInput[1].value);
-    this.maxval.innerHTML = `⌀ ${this.sizes[this.rangeInput[1].value - 1]} cm`;
+    this.maxval.innerHTML = `âŒ€ ${this.sizes[this.rangeInput[1].value - 1]} cm`;
   };
 
   createSelect(select, array, data) {
@@ -3413,7 +3413,7 @@ class Home {
   formatInfos(item) {
     const type = item.dataset.type;
     const size = item.dataset.size;
-    return `${type + " ⌀ " + size}`;
+    return `${type + " âŒ€ " + size}`;
   }
 
   addCollectionItemsToCarousel(currentTarget) {
