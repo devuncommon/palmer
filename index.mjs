@@ -399,7 +399,7 @@ class Home {
 
     this.colorButton.innerText = "color";
     this.typeButton.innerText = "type";
-    this.sizeButton.innerText = "âŒ€ size";
+    this.sizeButton.innerText = "⌀ size";
 
     this.allFilters = [
       this.filterCategoryColor,
@@ -909,11 +909,11 @@ class Home {
 
   setMinValueOutput = () => {
     this.minRange = parseInt(this.rangeInput[0].value);
-    this.minval.innerHTML = `âŒ€ ${this.sizes[this.rangeInput[0].value]} cm`;
+    this.minval.innerHTML = `⌀ ${this.sizes[this.rangeInput[0].value]} cm`;
   };
   setMaxValueOutput = () => {
     this.maxRange = parseInt(this.rangeInput[1].value);
-    this.maxval.innerHTML = `âŒ€ ${this.sizes[this.rangeInput[1].value - 1]} cm`;
+    this.maxval.innerHTML = `⌀ ${this.sizes[this.rangeInput[1].value - 1]} cm`;
   };
 
   createSelect(select, array, data) {
@@ -2444,13 +2444,14 @@ class Home {
     this.cardTarget = document.querySelectorAll(".collection_item-card");
 
     this.cardTitleTrigger = ScrollTrigger.batch(this.cardParentSplit.words, {
+      once: true,
       onEnter: (batch) => {
         gsap.from(batch, {
           duration: 1,
           delay: 0.2,
           ease: "circ.inOut",
           yPercent: 100,
-          // stagger: 0.1,
+          stagger: 0.04,
         });
       },
     });
@@ -3413,7 +3414,7 @@ class Home {
   formatInfos(item) {
     const type = item.dataset.type;
     const size = item.dataset.size;
-    return `${type + " âŒ€ " + size}`;
+    return `${type + " ⌀ " + size}`;
   }
 
   addCollectionItemsToCarousel(currentTarget) {
@@ -4325,7 +4326,9 @@ class Home {
   }
 
   hideContextualInfos() {
-    // // console.log(this.infosSplit);
+    console.log("hide");
+
+    // console.log(this.infosSplit);
     if (this.infosSplit && this.infosSplit.chars)
       gsap.to(this.infosSplit.chars, {
         // duration: 0,
@@ -4341,12 +4344,19 @@ class Home {
   }
 
   showContextualInfos() {
-    gsap.from(this.infosSplit.chars, {
-      duration: 0.5,
-      ease: "cubic.inOut",
-      yPercent: 100,
-      stagger: 0.005,
-    });
+    console.log("show");
+    gsap.fromTo(
+      this.infosSplit.chars,
+      {
+        yPercent: 100,
+      },
+      {
+        duration: 0.5,
+        ease: "cubic.inOut",
+        yPercent: 0,
+        stagger: 0.005,
+      }
+    );
   }
 
   addFocusListeners() {
