@@ -4087,6 +4087,7 @@ class Home {
   }
 
   updateScrollSlider() {
+    // console.log("updateScrollSlider");
     if (Math.abs(this.currentScroll - this.scrollY) > 0.01) {
       // // // console.log("lerp", this.currentScroll, this.scrollY);
       // // // console.log(this.easeFactor);
@@ -4240,7 +4241,7 @@ class Home {
   }
 
   updateMarkee() {
-    // console.log(this.scrollY);
+    // console.log("updateMarkee", this.scrollY);
     if (this.isDragging) {
       this.markeeScroll = lerp(
         this.markeeScroll,
