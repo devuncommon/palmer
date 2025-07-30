@@ -3463,13 +3463,13 @@ class Home {
   onImagesLoaded(images) {
     let loadedCount = 0;
     const totalImages = images.length;
-    console.log(totalImages);
+    // console.log(totalImages);
 
     const onLoad = () => {
       loadedCount++;
-      console.log("onload", loadedCount, totalImages);
+      // console.log("onload", loadedCount, totalImages);
       if (loadedCount === totalImages) {
-        console.log("ok");
+        // console.log("ok");
         this.calculMarkeeHeight();
       }
     };
@@ -3491,7 +3491,7 @@ class Home {
       // Si toutes les images Ã©taient dÃ©jÃ  chargÃ©es
     });
 
-    console.log(totalImages);
+    // console.log(totalImages);
     if (totalImages < 4) {
       this.focusMarkeeWrapper.style.height = "fit-content";
     } else {
@@ -3534,8 +3534,8 @@ class Home {
     // console.log(this.focusMarkeeHeight);
     this.focusCarouselHeight =
       this.focusCarousel.getBoundingClientRect().height;
-    console.log(this.focusCarouselHeight);
-    console.log(this.focusCarousel);
+    // console.log(this.focusCarouselHeight);
+    // console.log(this.focusCarousel);
   }
 
   checkMarkeeDebounce = debounce(() => {
@@ -3948,7 +3948,7 @@ class Home {
   }
   // Initialiser l'Ã©vÃ©nement `wheel` pour faire dÃ©filer
   addWheelEvent(snapPoints) {
-    console.log("addWheelEvent");
+    // console.log("addWheelEvent");
     this.handleWheelBound = (e) => this.handleWheel(e, snapPoints);
     this.focusWrapper.addEventListener("wheel", this.handleWheelBound, {
       passive: false,
@@ -4344,7 +4344,7 @@ class Home {
   }
 
   hideContextualInfos() {
-    console.log("hide");
+    // console.log("hide");
 
     // console.log(this.infosSplit);
     if (this.infosSplit && this.infosSplit.chars)
@@ -4362,7 +4362,7 @@ class Home {
   }
 
   showContextualInfos() {
-    console.log("show");
+    // console.log("show");
     gsap.fromTo(
       this.infosSplit.chars,
       {
