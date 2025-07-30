@@ -3463,13 +3463,13 @@ class Home {
   onImagesLoaded(images) {
     let loadedCount = 0;
     const totalImages = images.length;
-    // console.log(totalImages);
+    console.log(totalImages);
 
     const onLoad = () => {
       loadedCount++;
-      // console.log("onload");
+      console.log("onload", loadedCount, totalImages);
       if (loadedCount === totalImages) {
-        // console.log("ok");
+        console.log("ok");
         this.calculMarkeeHeight();
       }
     };
@@ -3479,18 +3479,25 @@ class Home {
         // Image dÃ©jÃ  chargÃ©e
         // console.log("dÃ©jÃ ");
         loadedCount++;
+        if (loadedCount === totalImages) {
+          this.calculMarkeeHeight();
+        }
       } else {
         // Attendre qu'elle se charge
         img.addEventListener("load", onLoad);
         img.addEventListener("error", onLoad); // GÃ©rer le cas oÃ¹ une image Ã©choue
       }
+      // console.log(loadedCount === totalImages);
+      // Si toutes les images Ã©taient dÃ©jÃ  chargÃ©es
     });
 
-    // console.log(loadedCount === totalImages);
-    // Si toutes les images Ã©taient dÃ©jÃ  chargÃ©es
-    if (loadedCount === totalImages) {
-      this.calculMarkeeHeight();
+    console.log(totalImages);
+    if (totalImages < 4) {
+      this.focusMarkeeWrapper.style.height = "fit-content";
+    } else {
+      this.focusMarkeeWrapper.style.height = "32em";
     }
+    this.calculMarkeeHeight();
   }
 
   addMarkeeListeners() {
@@ -3527,7 +3534,8 @@ class Home {
     // console.log(this.focusMarkeeHeight);
     this.focusCarouselHeight =
       this.focusCarousel.getBoundingClientRect().height;
-    // console.log(this.focusCarouselHeight);
+    console.log(this.focusCarouselHeight);
+    console.log(this.focusCarousel);
   }
 
   checkMarkeeDebounce = debounce(() => {
@@ -3940,7 +3948,7 @@ class Home {
   }
   // Initialiser l'Ã©vÃ©nement `wheel` pour faire dÃ©filer
   addWheelEvent(snapPoints) {
-    // // console.log("addWheelEvent");
+    console.log("addWheelEvent");
     this.handleWheelBound = (e) => this.handleWheel(e, snapPoints);
     this.focusWrapper.addEventListener("wheel", this.handleWheelBound, {
       passive: false,
@@ -3956,6 +3964,7 @@ class Home {
   }
 
   handleWheel(e, snapPoints) {
+    // console.log("handlewheel");
     // // console.log(this.currentEase);
     this.isDragging = false;
     this.easeFactor = 0.02;
@@ -4241,6 +4250,7 @@ class Home {
   }
 
   updateMarkee() {
+    // console.log(this.isScrolling);
     // console.log("updateMarkee", this.scrollY);
     if (this.isDragging) {
       this.markeeScroll = lerp(
@@ -4251,8 +4261,9 @@ class Home {
       this.y =
         (this.markeeScroll / this.focusCarouselHeight) *
         (this.focusMarkeeHeight + 12);
-      // // // console.log(this.currentScroll);
+      // console.log("isDraging");
     } else if (this.isScrolling) {
+      // console.log("isScrolling");
       this.markeeScroll = lerp(
         this.markeeScroll,
         this.scrollY, // âœ… Cible correcte
@@ -4261,8 +4272,9 @@ class Home {
       this.y =
         (this.markeeScroll / this.focusCarouselHeight) *
         (this.focusMarkeeHeight + 12);
+      // console.log(this.markeeScroll, this.focusCarouselHeight);
     } else if (this.isClicking) {
-      // // // console.log(this.isClicking);
+      // console.log("isClicking");
       this.markeeScroll = lerp(
         this.markeeScroll,
         this.scrollY, // âœ… Cible correcte
@@ -4272,6 +4284,7 @@ class Home {
         (this.markeeScroll / this.focusCarouselHeight) *
         (this.focusMarkeeHeight + 12);
     } else {
+      // console.log("else");
       this.markeeScroll = lerp(
         this.markeeScroll,
         this.scrollY, // âœ… Cible correcte
@@ -4282,7 +4295,11 @@ class Home {
         (this.focusMarkeeHeight + 12);
     }
 
-    // console.log(this.markeeScroll);
+    console.log(
+      this.markeeScroll,
+      this.focusCarouselHeight,
+      this.focusMarkeeHeight
+    );
 
     // // // console.log(
     //   this.markeeScroll,
