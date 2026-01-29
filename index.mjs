@@ -729,6 +729,7 @@ class Home {
       "focusedCollectionTitle",
       "heading-style-160px"
     );
+    this.focusedCollectionTitle.style.overflow = "hidden";
     this.focusInfos.appendChild(this.focusedCollectionTitle);
 
     this.contextualInfo = document.createElement("p");
