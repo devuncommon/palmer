@@ -1562,9 +1562,11 @@ h1 .split-parent {
     left: 50%;
     top: 54px;
     opacity: 0;
-    z-index: 10000000000000;
-    cursor: pointer;
   }
+
+  .navbar {
+  z-index: 99999 !important;
+}
 
   .focusInfos {
     top: 0;
