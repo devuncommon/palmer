@@ -1076,7 +1076,8 @@ input[type="range"]:hover::-webkit-slider-thumb {
 }
 
 .viewButton {
-  z-index: 100000;
+  z-index: 10000000000000;
+  cursor: pointer;
   position: relative;
 }
 
