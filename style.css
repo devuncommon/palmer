@@ -1076,8 +1076,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
 }
 
 .viewButton {
-  z-index: 10000000000000;
-  cursor: pointer;
+  z-index: 100000;
   position: relative;
 }
 
@@ -1563,6 +1562,8 @@ h1 .split-parent {
     left: 50%;
     top: 54px;
     opacity: 0;
+    z-index: 10000000000000;
+    cursor: pointer;
   }
 
   .focusInfos {
