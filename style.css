@@ -563,10 +563,24 @@ body {
   /* display: none; */
 }
 
+.split-parent {
+  overflow: hidden !important;
+  display: block;
+}
+
+.line-height-slightup {
+  line-height: 1.1;
+}
+
+.overflow-hidden {
+  overflow: hidden !important;
+}
+
 .contextualInfo {
   position: fixed;
   left: 0;
   top: calc(100vh - 30vh);
+  /* white-space: pre-wrap !important; */
 
   padding-left: var(--padding-global--mobile);
 
@@ -1013,6 +1027,10 @@ input[type="range"]:hover::-webkit-slider-thumb {
 .navbarWrap {
   display: flex;
   gap: 16px;
+}
+
+.navbar {
+  z-index: 100000000;
 }
 
 .viewButton .innerIcon span::after {

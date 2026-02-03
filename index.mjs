@@ -729,7 +729,7 @@ class Home {
       "focusedCollectionTitle",
       "heading-style-160px"
     );
-    this.focusedCollectionTitle.style.overflow = "hidden";
+    // this.focusedCollectionTitle.style.overflow = "hidden";
     this.focusInfos.appendChild(this.focusedCollectionTitle);
 
     this.contextualInfo = document.createElement("p");
@@ -2463,14 +2463,21 @@ class Home {
   }
 
   prepareSplitTextGrid() {
-    var parentSplit = new SplitText(["h1", ".grid-text"], {
-      type: "lines",
+    // var parentSplit = new SplitText(["h1", ".grid-text"], {
+    //   type: "lines",
+    //   linesClass: "split-parent", // ← Ajouter line-height-slightup
+    // });
+
+    // Splitting and preparing texts
+    const h1s = new SplitText("h1", {
+      type: "chars, lines",
+      linesClass: "split-parent",
+    });
+    const ps = new SplitText(".grid-text", {
+      type: "words, lines",
       linesClass: "split-parent",
     });
 
-    // Splitting and preparing texts
-    const h1s = new SplitText("h1", { type: "chars" });
-    const ps = new SplitText(".grid-text", { type: "words" });
     this.H1split = gsap.from(h1s.chars, {
       duration: 1,
       ease: "circ.inOut",
@@ -3565,29 +3572,72 @@ class Home {
   }
 
   animFocusedText(currentCollec) {
-    this.focusedCollectionTitle.innerText = currentCollec;
-    var parentSplit = new SplitText(this.focusedCollectionTitle, {
-      type: "lines",
-      linesClass: "split-parent line-height-slightup",
-    });
-    const focusedTitle = new SplitText(this.focusedCollectionTitle, {
-      type: "words, chars",
-    });
+    // ✅ 1. Tuer toutes les animations en cours
+    gsap.killTweensOf(this.focusedCollectionTitle);
+    gsap.killTweensOf(this.focusedCollectionTitle.querySelectorAll("*"));
 
-    // this.focusedCollectionTitleSplit = gsap.from(focusedTitle.words, {
-    this.focusedCollectionTitleSplit = gsap.fromTo(
-      focusedTitle.chars,
-      {
-        yPercent: 115,
-      },
-      {
-        duration: 1,
-        ease: "expo.inOut",
-        stagger: 0.05,
-        yPercent: -10,
-        // stagger: 0.2,
-      }
-    );
+    // ✅ 2. Tuer l'ancienne animation SplitText
+    if (this.focusedCollectionTitleSplit) {
+      this.focusedCollectionTitleSplit.kill();
+      this.focusedCollectionTitleSplit = null;
+    }
+
+    // ✅ 3. Revert les anciennes instances de SplitText si elles existent
+    if (this.focusedTitleSplitInstance) {
+      this.focusedTitleSplitInstance.revert();
+      this.focusedTitleSplitInstance = null;
+    }
+    if (this.focusedParentSplitInstance) {
+      this.focusedParentSplitInstance.revert();
+      this.focusedParentSplitInstance = null;
+    }
+
+    // ✅ 4. Vider complètement
+    this.focusedCollectionTitle.innerHTML = "";
+
+    // ✅ 5. Force reflow
+    void this.focusedCollectionTitle.offsetHeight;
+
+    // ✅ 6. Mettre le nouveau texte
+    this.focusedCollectionTitle.textContent = currentCollec;
+
+    // ✅ NOUVEAU : Masquer immédiatement le conteneur
+    // ✅ NOUVEAU : Masquer immédiatement le conteneur
+    gsap.set(this.focusedCollectionTitle, { autoAlpha: 0 });
+
+    // ✅ 7. Attendre 2 frames
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Créer et STOCKER les nouveaux SplitText
+
+        this.focusedTitleSplitInstance = new SplitText(
+          this.focusedCollectionTitle,
+          {
+            type: "lines, words, chars",
+            linesClass: "split-parent line-height-slightup overflow-hidden", // ✅ Ajouter overflow-hidden
+          }
+        );
+
+        // ✅ CRITIQUE : Positionner TOUS les chars à yPercent: 115 AVANT de rendre visible
+        gsap.set(this.focusedTitleSplitInstance.chars, {
+          yPercent: 115,
+        });
+
+        // ✅ Rendre visible APRÈS avoir positionné les chars
+        gsap.set(this.focusedCollectionTitle, { autoAlpha: 1 });
+
+        // Créer l'animation
+        this.focusedCollectionTitleSplit = gsap.to(
+          this.focusedTitleSplitInstance.chars,
+          {
+            duration: 1,
+            ease: "expo.inOut",
+            stagger: 0.05,
+            yPercent: 0,
+          }
+        );
+      });
+    });
   }
 
   closeFocus(e) {
@@ -3676,18 +3726,31 @@ class Home {
     closeTL.add(() => (this.focusCarousel.innerHTML = ""), 1);
     // // // console.log(this.focusCarousel.innerHTML);
     closeTL.add(() => {
-      // // console.log(this.infosSplit);
-      // // // console.log("restart");
-      // this.focusedCollectionTitleSplit.revert();
-      // this.focusedCollectionTitleSplit.pause();
       this.hideContextualInfos();
+
+      // ✅ Tuer l'animation
+      if (this.focusedCollectionTitleSplit) {
+        this.focusedCollectionTitleSplit.kill();
+        this.focusedCollectionTitleSplit = null;
+      }
+
+      // ✅ Revert les instances de SplitText
+      if (this.focusedTitleSplitInstance) {
+        this.focusedTitleSplitInstance.revert();
+        this.focusedTitleSplitInstance = null;
+      }
+      if (this.focusedParentSplitInstance) {
+        this.focusedParentSplitInstance.revert();
+        this.focusedParentSplitInstance = null;
+      }
+
+      // ✅ Vider le contenu
+      this.focusedCollectionTitle.innerHTML = "";
+
       // Reset Carousel
       this.focusMarkee.innerHTML = "";
       this.contextualInfo.innerText = "";
-      this.focusedCollectionTitle.innerText = "";
       this.scrollY = 0;
-      // this.updateMarkee();
-      // this.updateScrollPositionScroll();
     }, 1);
     closeTL.to(
       [this.focusMarkee, this.focusMarkeeIndicator],
@@ -4296,11 +4359,11 @@ class Home {
         (this.focusMarkeeHeight + 12);
     }
 
-    console.log(
-      this.markeeScroll,
-      this.focusCarouselHeight,
-      this.focusMarkeeHeight
-    );
+    // console.log(
+    //   this.markeeScroll,
+    //   this.focusCarouselHeight,
+    //   this.focusMarkeeHeight
+    // );
 
     // // // console.log(
     //   this.markeeScroll,
@@ -4312,20 +4375,99 @@ class Home {
   }
 
   updateContextualInfos(currentSlide) {
-    // // // console.log("test");
-    if (this.infosSplit) this.hideContextualInfos();
-    // weird way to check if has close slider
+    // Annuler toutes les animations en cours
+    gsap.killTweensOf(this.contextualInfo);
+    if (this.infosSplit && this.infosSplit.chars) {
+      gsap.killTweensOf(this.infosSplit.chars);
+    }
+
+    this.contextualInfo.style.whiteSpace = "pre-wrap";
+
     if (!this.drag.enabled()) {
-      // console.log("showContextualInfos");
-      setTimeout(() => {
-        this.contextualInfo.innerText = this.currentSlideInfos[currentSlide];
-        var parentSplit = new SplitText(this.contextualInfo, {
-          type: "lines",
-          linesClass: "split-parent",
+      // 1. D'abord cacher
+      if (this.infosSplit) {
+        this.hideContextualInfos(() => {
+          // 2. Callback exécuté APRÈS l'animation de hide
+          this.setNewContextualInfo(currentSlide);
         });
-        this.infosSplit = new SplitText(this.contextualInfo, { type: "chars" });
-        this.showContextualInfos();
-      }, 500);
+      } else {
+        // Pas de split existant, on affiche directement
+        this.setNewContextualInfo(currentSlide);
+      }
+    }
+  }
+
+  setNewContextualInfo(currentSlide) {
+    // Changer le texte
+    this.contextualInfo.textContent = this.currentSlideInfos[currentSlide];
+
+    console.log("Element:", this.contextualInfo);
+    console.log("Nouvelle valeur:", this.currentSlideInfos[currentSlide]);
+    console.log("textContent actuel:", this.contextualInfo.textContent);
+
+    // Force un reflow
+    this.contextualInfo.offsetHeight;
+
+    // Créer le nouveau split
+    this.infosSplit = new SplitText(this.contextualInfo, {
+      type: "lines, chars",
+      linesClass: "split-parent",
+    });
+
+    // Afficher avec animation
+    this.showContextualInfos();
+  }
+
+  hideContextualInfos(callback) {
+    if (this.infosSplit && this.infosSplit.chars) {
+      gsap.to(this.infosSplit.chars, {
+        duration: 0.5,
+        ease: "cubic.inOut",
+        yPercent: -100,
+        stagger: 0.005,
+        onComplete: () => {
+          if (this.infosSplit) {
+            this.infosSplit.revert();
+            this.infosSplit = null;
+          }
+
+          // Si pas de callback, vider le texte après 1s
+          if (!callback) {
+            // setTimeout(() => {
+            this.contextualInfo.textContent = "";
+            // }, 1000);
+          } else {
+            // Sinon exécuter le callback
+            callback();
+          }
+        },
+      });
+    } else {
+      // Pas d'animation à faire
+      if (!callback) {
+        setTimeout(() => {
+          this.contextualInfo.textContent = "";
+        }, 1000);
+      } else {
+        callback();
+      }
+    }
+  }
+
+  showContextualInfos() {
+    if (this.infosSplit && this.infosSplit.chars) {
+      gsap.fromTo(
+        this.infosSplit.chars,
+        {
+          yPercent: 100,
+        },
+        {
+          duration: 0.5,
+          ease: "cubic.inOut",
+          yPercent: 0,
+          stagger: 0.005,
+        }
+      );
     }
   }
 
@@ -4342,40 +4484,6 @@ class Home {
       if (closest === -1) closest = 0;
     }
     return closest;
-  }
-
-  hideContextualInfos() {
-    // console.log("hide");
-
-    // console.log(this.infosSplit);
-    if (this.infosSplit && this.infosSplit.chars)
-      gsap.to(this.infosSplit.chars, {
-        // duration: 0,
-        duration: 0.5,
-        ease: "cubic.inOut",
-        yPercent: -100,
-        stagger: 0.005,
-        onComplete: () => {
-          // // console.log("complete chars");
-          // gsap.set(this.infosSplit.chars, { yPercent: 100 });
-        },
-      });
-  }
-
-  showContextualInfos() {
-    // console.log("show");
-    gsap.fromTo(
-      this.infosSplit.chars,
-      {
-        yPercent: 100,
-      },
-      {
-        duration: 0.5,
-        ease: "cubic.inOut",
-        yPercent: 0,
-        stagger: 0.005,
-      }
-    );
   }
 
   addFocusListeners() {
